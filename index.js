@@ -1,12 +1,9 @@
-const github = require('@actions/github');
-const axios = require('axios');
-const { context } = require('@actions/github');
-const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+module.exports = async ({ github, context, core }) => {
+  const axios = require('axios');
+  const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
+  const { pull_request, issue } = context.payload;
 
-const { pull_request, issue } = context.payload;
-
-const commentPr = async (testName) => {
-  try {
+  const commentPr = async (testName) => {
     const urlPrefix = process.env.TARGET_URL;
     const apiKey = process.env.METIS_API_KEY;
     await octokit.rest.issues.createComment({
@@ -14,28 +11,18 @@ const commentPr = async (testName) => {
       issue_number: pull_request ? pull_request.number : issue ? issue.number : 0,
       body: `Metis test results are available in the link: ${encodeURI(`${urlPrefix}/projects/${apiKey}/test/${testName}`)}`,
     });
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
-const createNewTest = async (prName, prId, prUrl) => {
-  try {
+  const createNewTest = async (prName, prId, prUrl) => {
     const urlPrefix = process.env.TARGET_URL;
     const apiKey = process.env.METIS_API_KEY;
     await axios.post(
       `${urlPrefix}/api/tests/create`,
       { prName, prId, prUrl, apiKey },
-      {
-        headers: { 'x-api-key': apiKey },
-      }
+      { headers: { 'x-api-key': apiKey } }
     );
-  } catch (error) {
-    console.error(error);
-  }
-};
+  };
 
-async function main() {
   try {
     const testName = pull_request?.title ? `pr:${pull_request.title}` : `commit:${context.sha}`;
     const prId = `${pull_request?.number}`;
@@ -47,7 +34,6 @@ async function main() {
     }
   } catch (error) {
     console.error(error);
+    core.setFailed(error);
   }
 }
-
-main();
