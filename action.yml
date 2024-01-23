@@ -7,6 +7,9 @@ inputs:
   metis-api-key:
     description: 'Metis application api key'
     required: true
+  github-token:
+    description: 'Github token to publish comments on PR'
+    required: true
   pr-name:
     description: 'PR name'
     default: ${{ github.event.pull_request.title }}
@@ -44,13 +47,17 @@ runs:
         done
       shell: bash
 
+    - run: npm install axios
+      shell: bash
+
     - name: Create test and comment
       uses: actions/github-script@v7
       env:
         METIS_API_KEY: ${{ inputs.metis-api-key }}
         TARGET_URL: ${{ inputs.target-url }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
       with:
         script: |
+          const axios = require('axios')
           const script = require('./dist/index.js')
-          await script({github, context, core})
+          await script({github, context, core, axios})

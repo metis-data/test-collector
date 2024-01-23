@@ -1,5 +1,4 @@
-module.exports = async ({ github, context, core }) => {
-  const axios = require('axios');
+module.exports = async ({ github, context, core, axios }) => {
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
   const { pull_request, issue } = context.payload;
 
