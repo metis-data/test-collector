@@ -44,12 +44,8 @@ runs:
         done
       shell: bash
 
-    - name: Set relative path
-      run: echo "::set-env name=ACTION_PATH::$(realpath ./.github/actions/create-test-and-comment)"
-      shell: bash
-
     - name: Create test and comment
-      uses: ${{ env.ACTION_PATH }}
+      uses: ${{ github.workspace }}/.github/create-test-and-comment
       with:
         metis-api-key: ${{ inputs.metis-api-key }}
         target-url: ${{ inputs.target-url }}
