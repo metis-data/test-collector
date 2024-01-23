@@ -1,0 +1,27 @@
+{
+  "name": "create-test-and-comment",
+  "version": "1.0.0",
+  "description": "create test workflow in metis platform and comment the PR",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ncc build index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metis-data/test-collector.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/metis-data/test-collector/issues"
+  },
+  "homepage": "https://github.com/metis-data/test-collector#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1",
+    "axios": "^1.2.2",
+    "octokit": "^2.0.10"
+  }
+}

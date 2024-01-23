@@ -1,0 +1,49 @@
+name: 'Metis Test Collector'
+description: 'Create metis-otel-collector for github workflow'
+inputs:
+  connection-string:
+    description: 'Connection string to the instrumented database'
+    required: true
+  metis-api-key:
+    description: 'Metis application api key'
+    required: true
+  pr-name:
+    description: 'PR name'
+    default: ${{ github.event.pull_request.title }}
+  commit-sha:
+    description: 'Commit sha'
+    default: ${{ github.sha }}
+  target-url:
+    description: 'Metis app target url'
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Setup metis collector
+      run: |
+        docker run -d \
+          --name collector \
+          -e CONNECTION_STRING=${{ inputs.connection-string }} \
+          -e METIS_API_KEY=${{ inputs.metis-api-key }} \
+          -e APP_TAG_PR=${{ inputs.pr-name || inputs.commit-sha }}
+          -p 4317:4317 -p 4318:4318
+          public.ecr.aws/o2c0x5x8/metis-otel-collector:latest
+      shell: bash
+
+    - name: Wait for collector to be ready
+      run: |
+        while ! curl -s http://localhost:4318/health > /dev/null; do
+          echo "Waiting for collector..."
+          sleep 5
+        done
+      shell: bash
+
+    - name: Create test and comment
+      uses: ./.github/actions/create-test-and-comment
+      with:
+        metis-api-key: ${{ inputs.metis-api-key }}
+        target-url: ${{ inputs.target-url }}
+
+
+
