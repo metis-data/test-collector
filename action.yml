@@ -25,7 +25,7 @@ runs:
   steps:
     - name: Setup metis collector
       run: |
-        db_container_name=${{ input.db-container-name }}
+        db_container_name=${{ inputs.db-container-name }}
         if [ -n "$db_container_name" ]; then
         network_name=${{ job.services[$db_container_name].aliases.network }}
         if [ -n "$network_name" ]; then
