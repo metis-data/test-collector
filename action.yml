@@ -27,7 +27,7 @@ runs:
       run: |
         db_container_name=${{ inputs.db-container-name }}
         if [ -n "$db_container_name" ]; then
-        network_name=${{ job.services[$db_container_name].aliases.network }}
+        network_name=${{ job.services["$db_container_name"].aliases.network }}
         if [ -n "$network_name" ]; then
           docker run -d \
             --name collector \
