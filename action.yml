@@ -25,8 +25,10 @@ runs:
   steps:
     - name: Setup metis collector
       run: |
+        echo "${{ inputs.db-network }}"
         docker network ls
         if [ -n ${{ inputs.db-network }} ]; then
+          echo "in if"
           docker run -d \
             --name collector \
             --network ${{ inputs.db-network }} \
@@ -36,6 +38,7 @@ runs:
             -p 4317:4317 -p 4318:4318 \
             public.ecr.aws/o2c0x5x8/metis-otel-collector:latest
         else
+          echo "in else"
           docker run -d \
             --name collector \
             -e CONNECTION_STRING=${{ inputs.connection-string }} \
