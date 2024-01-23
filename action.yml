@@ -45,11 +45,12 @@ runs:
       shell: bash
 
     - name: Create test and comment
-      run: dist/index.js
+      uses: actions/github-script@v7
+      env:
+        METIS_API_KEY: ${{ inputs.metis-api-key }}
+        TARGET_URL: ${{ inputs.target-url }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        metis-api-key: ${{ inputs.metis-api-key }}
-        target-url: ${{ inputs.target-url }}
-      shell: bash
-
-
-
+        script: |
+          const script = require('./dist/index.js')
+          await script({github, context, core})
