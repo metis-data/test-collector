@@ -40,8 +40,6 @@ runs:
       run: |
         while ! curl -s http://localhost:4318/health > /dev/null; do
           echo "Waiting for collector..."
-          curl -s http://localhost:4318/health
-          curl -s http://localhost:4318/ready
           sleep 5
         done
       shell: bash
