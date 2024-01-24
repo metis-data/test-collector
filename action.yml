@@ -57,8 +57,13 @@ runs:
         path: test-collector
         fetch-depth: 0
 
+    - name: Npm install
+      working-directory: test-collector/.github/actions/create-test-and-comment
+      run: npm install
+      shell: bash
+
     - name: Create test and comment
-      uses: ./test-collector/.github/actions/create-test-and-comment
+      uses: test-collector/.github/actions/create-test-and-comment
       with:
         metis-api-key: ${{ inputs.metis-api-key }}
         target-url: ${{ inputs.target-url }}
