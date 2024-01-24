@@ -1,0 +1,17 @@
+name: 'Create test and comment'
+description: 'Create test workflow in metis and comment the PR'
+author: 'Issackr'
+inputs:
+  metis-api-key:
+    description: 'Metis application api key'
+    required: true
+  github-token:
+    description: 'Token to publish comments on PR'
+    required: true
+  target-url:
+    description: 'Metis target url'
+    default: 'https://app.metisdata.io'
+
+runs:
+  using: 'node16'
+  main: 'dist/index'

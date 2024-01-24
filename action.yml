@@ -28,7 +28,6 @@ runs:
   steps:
     - name: Setup metis collector
       run: |
-        echo "${{ inputs.job-network }}"
         docker run -d \
           --name collector \
           --network ${{ inputs.job-network }} \
@@ -47,17 +46,17 @@ runs:
         done
       shell: bash
 
-    - run: npm install axios
-      shell: bash
+    - name: Checkout repo
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Create test and comment
-      uses: actions/github-script@v7
-      env:
-        METIS_API_KEY: ${{ inputs.metis-api-key }}
-        TARGET_URL: ${{ inputs.target-url }}
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+      uses: ./.github/actions/create-test-and-comment
       with:
-        script: |
-          const axios = require('axios')
-          const script = require('./dist/index.js')
-          await script({github, context, core, axios})
+        metis-api-key: ${{ inputs.metis-api-key }}
+        target-url: ${{ inputs.target-url }}
+        github-token: ${{ inputs.github-token }}
+
+
+
