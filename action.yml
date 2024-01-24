@@ -19,6 +19,9 @@ inputs:
   target-url:
     description: 'Metis app target url'
     default: 'https://app.metisdata.io'
+  exporter-target-url:
+    description: 'Metis exporter target url'
+    default: 'https://ingest.metisdata.io'
   job-network:
     description: 'Docker job network'
     default: ${{ job.container.network }}
@@ -26,19 +29,16 @@ inputs:
 runs:
   using: composite
   steps:
-    - run: |
-        echo "${{ inputs.pr-name }}"
-        echo "${{ inputs.commit-sha }}"
-      shell: bash
-
     - name: Setup metis collector
       run: |
+        echo "${{ inputs.pr-name || inputs.commit-sha }}"
         docker run -d \
           --name collector \
           --network ${{ inputs.job-network }} \
           -e CONNECTION_STRING=${{ inputs.connection-string }} \
           -e METIS_API_KEY=${{ inputs.metis-api-key }} \
           -e APP_TAG_PR="${{ inputs.pr-name || inputs.commit-sha }}" \
+          -e METIS_EXPORTER_URL=${{ inputs.exporter-target-url }} \
           -p 4317:4317 -p 4318:4318 \
           public.ecr.aws/o2c0x5x8/metis-otel-collector:latest
       shell: bash
@@ -58,12 +58,6 @@ runs:
         ref: v1
         path: test-collector
         fetch-depth: 0
-#
-#    - name: Npm install
-#      run: |
-#        cd "${{ github.workspace }}/test-collector/.github/actions/create-test-and-comment"
-#        npm install
-#      shell: bash
 
     - name: Create test and comment
       uses: ./test-collector/.github/actions/create-test-and-comment
