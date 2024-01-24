@@ -10,7 +10,7 @@ inputs:
     required: true
   target-url:
     description: 'Metis target url'
-    default: 'https://app.metisdata.io'
+    required: true
 
 runs:
   using: 'node16'
