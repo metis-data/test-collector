@@ -31,7 +31,7 @@ runs:
   steps:
     - name: Setup metis collector
       run: |
-        docker run -d \
+        CONTAINER_ID=$(docker run -d \
           --name collector \
           --network ${{ inputs.job-network }} \
           -e CONNECTION_STRING=${{ inputs.connection-string }} \
@@ -39,7 +39,9 @@ runs:
           -e METIS_EXPORTER_URL=${{ inputs.exporter-target-url }} \
           -e APP_TAG_PR="${{ inputs.pr-name || inputs.commit-sha }}" \
           -p 4317:4317 -p 4318:4318 \
-          public.ecr.aws/o2c0x5x8/metis-otel-collector:latest
+          public.ecr.aws/o2c0x5x8/metis-otel-collector:latest)
+        
+        docker logs $CONTAINER_ID
       shell: bash
 
     - name: Wait for collector to be ready
