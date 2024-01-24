@@ -49,6 +49,8 @@ runs:
     - name: Checkout repo
       uses: actions/checkout@v4
       with:
+        repository: metis-data/test-collector
+        ref: main
         fetch-depth: 0
 
     - name: Create test and comment
