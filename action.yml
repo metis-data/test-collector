@@ -31,7 +31,7 @@ runs:
   steps:
     - name: Setup metis collector
       run: |
-        CONTAINER_ID=$(docker run -d \
+        CONTAINER_ID=$(docker run -d -it \
           --name collector \
           --network ${{ inputs.job-network }} \
           -e CONNECTION_STRING=${{ inputs.connection-string }} \
