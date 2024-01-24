@@ -49,13 +49,13 @@ runs:
 #    - name: Checkout
 #      uses: actions/checkout@v4
 #
-#    - name: Checkout action repo
-#      uses: actions/checkout@v4
-#      with:
-#        repository: metis-data/test-collector
-#        ref: v1
-#        path: test-collector
-#        fetch-depth: 0
+    - name: Checkout action repo
+      uses: actions/checkout@v4
+      with:
+        repository: metis-data/test-collector
+        ref: v1
+        path: test-collector
+        fetch-depth: 0
 
     - name: Npm install
       run: |
