@@ -25,6 +25,12 @@ inputs:
   job-network:
     description: 'Docker job network'
     default: ${{ job.container.network }}
+  metis-log-level:
+    description: 'Metis collector log level'
+    default: 'log'
+  log-to-console:
+    description: 'Collector log to console'
+    default: 'false'
 
 runs:
   using: composite
@@ -38,6 +44,8 @@ runs:
           -e METIS_API_KEY=${{ inputs.metis-api-key }} \
           -e METIS_EXPORTER_URL=${{ inputs.exporter-target-url }} \
           -e APP_TAG_PR="${{ inputs.pr-name || inputs.commit-sha }}" \
+          -e LOG_LEVEL=${{ inputs.metis-log-level }} \
+          -e LOG_TO_CONSOLE=${{ inputs.log-to-console }} \
           -p 4317:4317 -p 4318:4318 \
           public.ecr.aws/o2c0x5x8/metis-otel-collector:latest)
         
