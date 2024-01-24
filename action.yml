@@ -55,6 +55,7 @@ runs:
         repository: metis-data/test-collector
         ref: v1
         path: test-collector
+        fetch-depth: 0
 
     - name: Create test and comment
       uses: ./test-collector/.github/actions/create-test-and-comment
