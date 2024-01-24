@@ -51,10 +51,11 @@ runs:
       with:
         repository: metis-data/test-collector
         ref: main
+        path: test-collector/.github/actions/create-test-and-comment
         fetch-depth: 0
 
     - name: Create test and comment
-      uses: ./.github/actions/create-test-and-comment
+      uses: .github/actions/create-test-and-comment
       with:
         metis-api-key: ${{ inputs.metis-api-key }}
         target-url: ${{ inputs.target-url }}
