@@ -12,10 +12,10 @@ inputs:
     required: true
   pr-name:
     description: 'PR name'
-    default: ${{ github.event.pull_request.title }}
+    default: "pr:${{ github.event.pull_request.title }}"
   commit-sha:
     description: 'Commit sha'
-    default: ${{ github.sha }}
+    default: "commit:${{ github.sha }}"
   target-url:
     description: 'Metis app target url'
     default: 'https://app.metisdata.io'
@@ -26,6 +26,11 @@ inputs:
 runs:
   using: composite
   steps:
+    - run: |
+        echo "${{ inputs.pr-name }}"
+        echo "${{ inputs.commit-sha }}"
+      shell: bash
+
     - name: Setup metis collector
       run: |
         docker run -d \
@@ -46,9 +51,6 @@ runs:
         done
       shell: bash
 
-#    - name: Checkout
-#      uses: actions/checkout@v4
-#
     - name: Checkout action repo
       uses: actions/checkout@v4
       with:
@@ -56,12 +58,12 @@ runs:
         ref: v1
         path: test-collector
         fetch-depth: 0
-
-    - name: Npm install
-      run: |
-        cd "${{ github.workspace }}/test-collector/.github/actions/create-test-and-comment"
-        npm install
-      shell: bash
+#
+#    - name: Npm install
+#      run: |
+#        cd "${{ github.workspace }}/test-collector/.github/actions/create-test-and-comment"
+#        npm install
+#      shell: bash
 
     - name: Create test and comment
       uses: ./test-collector/.github/actions/create-test-and-comment
