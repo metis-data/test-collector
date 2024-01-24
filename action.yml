@@ -31,14 +31,13 @@ runs:
   steps:
     - name: Setup metis collector
       run: |
-        echo "${{ inputs.pr-name || inputs.commit-sha }}"
         docker run -d \
           --name collector \
           --network ${{ inputs.job-network }} \
           -e CONNECTION_STRING=${{ inputs.connection-string }} \
           -e METIS_API_KEY=${{ inputs.metis-api-key }} \
-          -e APP_TAG_PR="${{ inputs.pr-name || inputs.commit-sha }}" \
           -e METIS_EXPORTER_URL=${{ inputs.exporter-target-url }} \
+          -e APP_TAG_PR="${{ inputs.pr-name || inputs.commit-sha }}" \
           -p 4317:4317 -p 4318:4318 \
           public.ecr.aws/o2c0x5x8/metis-otel-collector:latest
       shell: bash
