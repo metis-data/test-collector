@@ -51,10 +51,26 @@ export function setupCollector(
   const collectorId = run(runCmd, { shell: options.shell });
 
   const healthCmd = `
-    while ! curl -s http://localhost:4318/health > /dev/null; do \\
-      echo "Waiting for collector..." \\
-      sleep 5 \\
-    done;`;
+    WAIT_SECONDS=5
+    MAX_RETRIES=12
+    RETRY_COUNT=0
+
+    while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+      if curl -s http://localhost:4318/health > /dev/null; then
+        echo "Collector is ready."
+        break
+      else
+        echo "Waiting for collector..."
+        sleep $WAIT_SECONDS
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+      fi
+    done
+
+    if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+        echo "Collector did not become ready within the given retries."
+        exit 1
+    fi
+  `;
 
   run(healthCmd, { shell: options.shell });
 
