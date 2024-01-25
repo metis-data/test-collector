@@ -10,7 +10,8 @@
     "format": "prettier --write \"**/*.ts\"",
     "lint": "eslint src/**/*.ts",
     "package": "ncc build --source-map --license licenses.txt",
-    "all": "npm run format && npm run clean && npm run build && npm run lint && npm run package && npm test"
+    "package-post": "ncc build --source-map dist/post --out dist/post",
+    "all": "npm run format && npm run clean && npm run build && npm run lint && npm run package && npm run package-post && npm test"
   },
   "repository": {
     "type": "git",
