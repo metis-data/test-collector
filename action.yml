@@ -2,78 +2,34 @@ name: 'Metis Test Collector'
 description: 'Create metis-otel-collector for github workflow'
 inputs:
   connection-string:
-    description: 'Connection string to the instrumented database'
+    description: Connection string to the instrumented database
     required: true
   metis-api-key:
-    description: 'Metis application api key'
+    description: Metis application api key
     required: true
   github-token:
-    description: 'Github token to publish comments on PR'
+    description: Github token to publish comments on PR
     required: true
-  pr-name:
-    description: 'PR name'
-    default: "pr:${{ github.event.pull_request.title }}"
-  commit-sha:
-    description: 'Commit sha'
-    default: "commit:${{ github.sha }}"
   target-url:
-    description: 'Metis app target url'
-    default: 'https://app.metisdata.io'
+    description: Metis app target url
+    default: https://app.metisdata.io
   exporter-target-url:
-    description: 'Metis exporter target url'
-    default: 'https://ingest.metisdata.io'
+    description: Metis exporter target url
+    default: https://ingest.metisdata.io
   job-network:
-    description: 'Docker job network'
+    description: Docker job network
     default: ${{ job.container.network }}
   metis-log-level:
-    description: 'Metis collector log level'
-    default: 'log'
-  log-to-console:
-    description: 'Collector log to console'
+    description: Metis collector log level
+    default: log
+  dump-logs:
+    description: Collector dump logs to console
     default: 'false'
+  shell:
+    description: Shell to execute commands. Defaults to "/bin/sh"
+    default: /bin/sh
 
 runs:
-  using: composite
-  steps:
-    - name: Setup metis collector
-      run: |
-        CONTAINER_ID=$(docker run -d -it \
-          --name collector \
-          --network ${{ inputs.job-network }} \
-          -e CONNECTION_STRING=${{ inputs.connection-string }} \
-          -e METIS_API_KEY=${{ inputs.metis-api-key }} \
-          -e METIS_EXPORTER_URL=${{ inputs.exporter-target-url }} \
-          -e APP_TAG_PR="${{ inputs.pr-name || inputs.commit-sha }}" \
-          -e LOG_LEVEL=${{ inputs.metis-log-level }} \
-          -e LOG_TO_CONSOLE=${{ inputs.log-to-console }} \
-          -p 4317:4317 -p 4318:4318 \
-          public.ecr.aws/o2c0x5x8/metis-otel-collector:latest)
-        
-        docker logs $CONTAINER_ID
-      shell: bash
-
-    - name: Wait for collector to be ready
-      run: |
-        while ! curl -s http://localhost:4318/health > /dev/null; do
-          echo "Waiting for collector..."
-          sleep 5
-        done
-      shell: bash
-
-    - name: Checkout action repo
-      uses: actions/checkout@v4
-      with:
-        repository: metis-data/test-collector
-        ref: v1
-        path: test-collector
-        fetch-depth: 0
-
-    - name: Create test and comment
-      uses: ./test-collector/.github/actions/create-test-and-comment
-      with:
-        metis-api-key: ${{ inputs.metis-api-key }}
-        target-url: ${{ inputs.target-url }}
-        github-token: ${{ inputs.github-token }}
-
-
-
+  using: node16
+  main: dist/index.js
+  post: dist/post.js
