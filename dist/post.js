@@ -40,7 +40,7 @@ const utils_1 = require("./utils");
 const apiKey = core.getInput('metis-api-key');
 const githubToken = core.getInput('github-token');
 const targetUrl = core.getInput('target-url');
-const dumpLogs = core.getInput('dump-logs');
+const dumpLogs = core.getInput('dump-logs') === 'true';
 const octokit = github.getOctokit(githubToken);
 const { pull_request: pr, issue } = github.context.payload;
 const prName = pr
