@@ -21,6 +21,7 @@ const prName = pr
 const http = new HttpClient();
 
 const { number: prId, html_url: prUrl } = pr || {};
+const headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey };
 const collectorId = core.getState('collector-id');
 
 if (dumpLogs) {
@@ -34,11 +35,11 @@ stopCollector(collectorId);
 
 (async () => {
   try {
-    await Promise.all([
+    const [postRes, _] = await Promise.all([
       http.post(
         `${targetUrl}/api/tests/create`,
         JSON.stringify({ prName, prId, prUrl }),
-        { 'x-api-key': apiKey },
+        headers,
       ),
 
       octokit.rest.issues.createComment({
@@ -49,6 +50,8 @@ stopCollector(collectorId);
         )}`,
       }),
     ]);
+    console.log(postRes.message);
+    console.log(await postRes.readBody());
   } catch (e: any) {
     console.error(e);
     core.setFailed(e);
