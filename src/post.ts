@@ -24,14 +24,14 @@ const { number: prId, html_url: prUrl } = pr || {};
 const headers: any = { 'x-api-key': apiKey };
 const collectorId = core.getState('collector-id');
 
-stopCollector(collectorId);
-
 if (dumpLogs) {
   console.log('**************************************************************');
   console.log('***                  Metis Otel Collector                  ***');
   console.log('**************************************************************');
   dumpCollectorLogs(collectorId);
 }
+
+stopCollector(collectorId);
 
 (async () => {
   try {

@@ -52,13 +52,13 @@ const http = new http_client_1.HttpClient();
 const { number: prId, html_url: prUrl } = pr || {};
 const headers = { 'x-api-key': apiKey };
 const collectorId = core.getState('collector-id');
-(0, utils_1.stopCollector)(collectorId);
 if (dumpLogs) {
     console.log('**************************************************************');
     console.log('***                  Metis Otel Collector                  ***');
     console.log('**************************************************************');
     (0, utils_1.dumpCollectorLogs)(collectorId);
 }
+(0, utils_1.stopCollector)(collectorId);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield Promise.all([
