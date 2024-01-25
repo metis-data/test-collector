@@ -6,8 +6,8 @@ const apiKey = core.getInput('metis-api-key');
 const connectionString = core.getInput('connection-string');
 const logLevel = core.getInput('metis-log-level');
 const exporterTargetUrl = core.getInput('exporter-target-url');
+const network = core.getInput('job-network');
 const shell = core.getInput('shell');
-const network = core.getInput('network');
 
 const { pull_request: pr } = context.payload;
 
