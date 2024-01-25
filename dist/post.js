@@ -50,7 +50,6 @@ const prName = pr
     : `commit:${github.context.sha}`;
 const http = new http_client_1.HttpClient();
 const { number: prId, html_url: prUrl } = pr || {};
-const headers = { 'x-api-key': apiKey };
 const collectorId = core.getState('collector-id');
 if (dumpLogs) {
     console.log('**************************************************************');
@@ -62,7 +61,7 @@ if (dumpLogs) {
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield Promise.all([
-            http.post(`${targetUrl}/api/tests/create`, JSON.stringify({ prName, prId, prUrl }), { headers }),
+            http.post(`${targetUrl}/api/tests/create`, JSON.stringify({ prName, prId, prUrl }), { 'x-api-key': apiKey }),
             octokit.rest.issues.createComment(Object.assign(Object.assign({}, github_1.context.repo), { issue_number: prId || (issue === null || issue === void 0 ? void 0 : issue.number) || 0, body: `Metis test results are available in the link: ${encodeURI(`${targetUrl}/projects/${apiKey}/test/${prName}`)}` })),
         ]);
     }
