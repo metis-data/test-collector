@@ -21,7 +21,7 @@ const prName = pr
 const http = new HttpClient();
 
 const { number: prId, html_url: prUrl } = pr || {};
-const headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey };
+const headers = { 'x-api-key': apiKey };
 const collectorId = core.getState('collector-id');
 
 if (dumpLogs) {
@@ -35,10 +35,10 @@ stopCollector(collectorId);
 
 (async () => {
   try {
-    const [postRes, _] = await Promise.all([
+    await Promise.all([
       http.post(
         `${targetUrl}/api/tests/create`,
-        JSON.stringify({ prName, prId, prUrl }),
+        JSON.stringify({ prName, prId: `${prId}`, prUrl }),
         headers,
       ),
 
@@ -50,8 +50,6 @@ stopCollector(collectorId);
         )}`,
       }),
     ]);
-    console.log(postRes.message);
-    console.log(await postRes.readBody());
   } catch (e: any) {
     console.error(e);
     core.setFailed(e);
