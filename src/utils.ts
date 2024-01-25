@@ -67,8 +67,8 @@ export function setupCollector(
     done
 
     if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
-        echo "Collector did not become ready within the given retries."
-        exit 1
+      echo "Collector did not become ready within the given retries."
+      exit 1
     fi
   `;
 

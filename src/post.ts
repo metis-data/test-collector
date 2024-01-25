@@ -21,7 +21,6 @@ const prName = pr
 const http = new HttpClient();
 
 const { number: prId, html_url: prUrl } = pr || {};
-const headers: any = { 'x-api-key': apiKey };
 const collectorId = core.getState('collector-id');
 
 if (dumpLogs) {
@@ -39,7 +38,7 @@ stopCollector(collectorId);
       http.post(
         `${targetUrl}/api/tests/create`,
         JSON.stringify({ prName, prId, prUrl }),
-        { headers },
+        { 'x-api-key': apiKey },
       ),
 
       octokit.rest.issues.createComment({
