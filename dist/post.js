@@ -61,12 +61,10 @@ if (dumpLogs) {
 (0, utils_1.stopCollector)(collectorId);
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const [postRes, _] = yield Promise.all([
+        yield Promise.all([
             http.post(`${targetUrl}/api/tests/create`, JSON.stringify({ prName, prId: `${prId}`, prUrl }), headers),
             octokit.rest.issues.createComment(Object.assign(Object.assign({}, github_1.context.repo), { issue_number: prId || (issue === null || issue === void 0 ? void 0 : issue.number) || 0, body: `Metis test results are available in the link: ${encodeURI(`${targetUrl}/projects/${apiKey}/test/${prName}`)}` })),
         ]);
-        console.log(postRes.message);
-        console.log(yield postRes.readBody());
     }
     catch (e) {
         console.error(e);
