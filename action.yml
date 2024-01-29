@@ -25,6 +25,9 @@ inputs:
   dump-logs:
     description: Collector dump logs to console
     default: 'false'
+  setup-collector:
+    description: Decide if the action is responsible for setting up the collector
+    default: 'true'
   shell:
     description: Shell to execute commands. Defaults to "/bin/sh"
     default: /bin/sh
