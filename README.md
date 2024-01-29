@@ -7,8 +7,6 @@ Github action for collecting tests traces
 An action to set up OTEL collector for tests flows. The traces data is being sent to Metis platform to get analyzed 
 and derive insights.
 
-> :warning: **Note:** Currently support Mocha for Node and was not tested on other frameworks.
-
 ## Usage
 1. Add the following step to your workflow:
 ```shell
@@ -31,18 +29,9 @@ and derive insights.
     pull-requests: write
 ```
 
-3. Apply auto instrumentation to your tests (use --save-dev if opentelemetry is used in tests only):
-```shell
-npm install --save-dev @opentelemetry/auto-instrumentations-node @opentelemetry/instrumentation
-```
+Make sure to instrument your application to send traces to the collector, for further information consult [Metis Docs](https://docs.metisdata.io/Prevention/Prevention_performance/)
 
-4. Add the auto instrumentation flags to your test command:
-```shell
-OTEL_SERVICE_NAME=<YOUR_TEST_FLAG> NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register" ... <your-original-test-command>
-```
-> :warning:  It is recommended to set OTEL_SERVICE_NAME so tests results can be grouped by it.
-
-### Full working example
+### Full working example with auto-instrumentation
 ```shell
 # workflow.yaml
 name: Test application on pull request with Metis
@@ -92,6 +81,11 @@ jobs:
     ...
     "test": "OTEL_SERVICE_NAME=<YOUR_TEST_NAME> NODE_OPTIONS="--require @opentelemetry/auto-instrumentations-node/register" mocha --recursive './src/**/*.spec.js'"
   },
+  "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.40.2",
+    "@opentelemetry/instrumentation": "^0.36.0",
+    ...
+  }
 ```
 
 * If you like to get logs from the collector, set the next parameters to the action:

@@ -40,10 +40,11 @@ const exporterTargetUrl = core.getInput('exporter-target-url');
 const network = core.getInput('job-network');
 const shell = core.getInput('shell');
 const { pull_request: pr } = github_1.context.payload;
+const prId = pr === null || pr === void 0 ? void 0 : pr.number;
 const appTagPr = pr
     ? pr.title
-        ? `pr:${pr.title}`
-        : `pr:${github_1.context.sha}`
+        ? `pr:${prId}:${pr.title}`
+        : `pr:${prId}:${github_1.context.sha}`
     : `commit:${github_1.context.sha}`;
 const collectorId = (0, utils_1.setupCollector)(network, connectionString, apiKey, exporterTargetUrl, appTagPr, logLevel, { shell });
 core.saveState('collector-id', collectorId);

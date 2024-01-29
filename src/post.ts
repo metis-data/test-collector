@@ -12,15 +12,15 @@ const dumpLogs = core.getInput('dump-logs') === 'true';
 const octokit = github.getOctokit(githubToken);
 const { pull_request: pr, issue } = github.context.payload;
 
+const { number: prId, html_url: prUrl } = pr || {};
 const prName = pr
   ? pr.title
-    ? `pr:${pr.title}`
-    : `pr:${github.context.sha}`
+    ? `pr:${prId}:${pr.title}`
+    : `pr:${prId}:${github.context.sha}`
   : `commit:${github.context.sha}`;
 
 const http = new HttpClient();
 
-const { number: prId, html_url: prUrl } = pr || {};
 const headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey };
 const collectorId = core.getState('collector-id');
 
@@ -42,13 +42,14 @@ stopCollector(collectorId);
         headers,
       ),
 
-      octokit.rest.issues.createComment({
-        ...context.repo,
-        issue_number: prId || issue?.number || 0,
-        body: `Metis test results are available in the link: ${encodeURI(
-          `${targetUrl}/projects/${apiKey}/test/${prName}`,
-        )}`,
-      }),
+      pr?.title &&
+        octokit.rest.issues.createComment({
+          ...context.repo,
+          issue_number: prId || issue?.number || 0,
+          body: `Metis test results are available in the link: ${encodeURI(
+            `${targetUrl}/projects/${apiKey}/test/${prName}`,
+          )}`,
+        }),
     ]);
   } catch (e: any) {
     console.error(e);
