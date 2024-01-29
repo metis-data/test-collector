@@ -88,6 +88,7 @@ jobs:
   }
 ```
 
+### Monitoring
 * If you like to get logs from the collector, set the next parameters to the action:
 ```shell
   with:

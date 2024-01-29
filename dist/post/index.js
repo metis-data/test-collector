@@ -48,6 +48,7 @@ const apiKey = core.getInput('metis-api-key');
 const githubToken = core.getInput('github-token');
 const targetUrl = core.getInput('target-url');
 const dumpLogs = core.getInput('dump-logs') === 'true';
+const setupMetis = core.getInput('setup-collector') === 'true';
 const octokit = github.getOctokit(githubToken);
 const { pull_request: pr, issue } = github.context.payload;
 const { number: prId, html_url: prUrl } = pr || {};
@@ -59,13 +60,15 @@ const prName = pr
 const http = new http_client_1.HttpClient();
 const headers = { 'Content-Type': 'application/json', 'x-api-key': apiKey };
 const collectorId = core.getState('collector-id');
-if (dumpLogs) {
+if (setupMetis && dumpLogs) {
     console.log('**************************************************************');
     console.log('***                  Metis Otel Collector                  ***');
     console.log('**************************************************************');
     (0, utils_1.dumpCollectorLogs)(collectorId);
 }
-(0, utils_1.stopCollector)(collectorId);
+if (setupMetis) {
+    (0, utils_1.stopCollector)(collectorId);
+}
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield Promise.all([
