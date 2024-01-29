@@ -11,10 +11,11 @@ const shell = core.getInput('shell');
 
 const { pull_request: pr } = context.payload;
 
+const prId = pr?.number;
 const appTagPr = pr
   ? pr.title
-    ? `pr:${pr.title}`
-    : `pr:${context.sha}`
+    ? `pr:${prId}:${pr.title}`
+    : `pr:${prId}:${context.sha}`
   : `commit:${context.sha}`;
 
 const collectorId = setupCollector(
