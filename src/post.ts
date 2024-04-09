@@ -1,8 +1,8 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { HttpClient } from '@actions/http-client';
 import { context } from '@actions/github';
-import { stopCollector, dumpCollectorLogs } from './utils';
+import { HttpClient } from '@actions/http-client';
+import { dumpCollectorLogs, stopCollector } from './utils';
 
 const apiKey = core.getInput('metis-api-key');
 const githubToken = core.getInput('github-token');
@@ -38,6 +38,12 @@ if (setupMetis) {
 
 (async () => {
   try {
+    const apiKeyIdResponse = await http.get(
+      `${targetUrl}/api/api-key/id`,
+      { headers: { 'x-api-key': apiKey } },
+  );
+  const { id: apiKeyId } = apiKeyIdResponse.data;
+
     await Promise.all([
       http.post(
         `${targetUrl}/api/tests/create`,
@@ -50,7 +56,7 @@ if (setupMetis) {
           ...context.repo,
           issue_number: prId || issue?.number || 0,
           body: `Metis test results are available in the link: ${encodeURI(
-            `${targetUrl}/projects/${apiKey}/test/${prName}`,
+            `${targetUrl}/projects/${apiKeyId}/test/${prName}`,
           )}`,
         }),
     ]);
