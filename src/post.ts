@@ -38,28 +38,22 @@ if (setupMetis) {
 
 (async () => {
   try {
-    const apiKeyIdResponse = await http.get(
-      `${targetUrl}/api/api-key/id`,
-      { headers: { 'x-api-key': apiKey } },
-  );
-  const { id: apiKeyId } = apiKeyIdResponse.data;
+    const createRes = await http.post(
+      `${targetUrl}/api/tests/create`,
+      JSON.stringify({ prName, prId: `${prId}`, prUrl }),
+      headers,
+    );
+    const jsonRes = JSON.parse(await createRes.readBody());
 
-    await Promise.all([
-      http.post(
-        `${targetUrl}/api/tests/create`,
-        JSON.stringify({ prName, prId: `${prId}`, prUrl }),
-        headers,
-      ),
-
-      pr?.title &&
-        octokit.rest.issues.createComment({
+    pr?.title &&
+        await octokit.rest.issues.createComment({
           ...context.repo,
           issue_number: prId || issue?.number || 0,
           body: `Metis test results are available in the link: ${encodeURI(
-            `${targetUrl}/projects/${apiKeyId}/test/${prName}`,
+            `${targetUrl}/projects/${jsonRes.api_key_id}/test/${prName}`,
           )}`,
-        }),
-    ]);
+        });
+
   } catch (e: any) {
     console.error(e);
     core.setFailed(e);
