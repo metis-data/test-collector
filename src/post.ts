@@ -46,14 +46,13 @@ if (setupMetis) {
     const jsonRes = JSON.parse(await createRes.readBody());
 
     pr?.title &&
-        await octokit.rest.issues.createComment({
-          ...context.repo,
-          issue_number: prId || issue?.number || 0,
-          body: `Metis test results are available in the link: ${encodeURI(
-            `${targetUrl}/projects/${jsonRes.api_key_id}/test/${prName}`,
-          )}`,
-        });
-
+      (await octokit.rest.issues.createComment({
+        ...context.repo,
+        issue_number: prId || issue?.number || 0,
+        body: `Metis test results are available in the link: ${encodeURI(
+          `${targetUrl}/projects/${jsonRes.api_key_id}/test/${prName}`,
+        )}`,
+      }));
   } catch (e: any) {
     console.error(e);
     core.setFailed(e);
