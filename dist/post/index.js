@@ -41,8 +41,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
-const http_client_1 = __nccwpck_require__(6255);
 const github_1 = __nccwpck_require__(5438);
+const http_client_1 = __nccwpck_require__(6255);
 const utils_1 = __nccwpck_require__(4729);
 const apiKey = core.getInput('metis-api-key');
 const githubToken = core.getInput('github-token');
@@ -71,11 +71,10 @@ if (setupMetis) {
 }
 (() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield Promise.all([
-            http.post(`${targetUrl}/api/tests/create`, JSON.stringify({ prName, prId: `${prId}`, prUrl }), headers),
-            (pr === null || pr === void 0 ? void 0 : pr.title) &&
-                octokit.rest.issues.createComment(Object.assign(Object.assign({}, github_1.context.repo), { issue_number: prId || (issue === null || issue === void 0 ? void 0 : issue.number) || 0, body: `Metis test results are available in the link: ${encodeURI(`${targetUrl}/projects/${apiKey}/test/${prName}`)}` })),
-        ]);
+        const createRes = yield http.post(`${targetUrl}/api/tests/create`, JSON.stringify({ prName, prId: `${prId}`, prUrl }), headers);
+        const jsonRes = JSON.parse(yield createRes.readBody());
+        (pr === null || pr === void 0 ? void 0 : pr.title) &&
+            (yield octokit.rest.issues.createComment(Object.assign(Object.assign({}, github_1.context.repo), { issue_number: prId || (issue === null || issue === void 0 ? void 0 : issue.number) || 0, body: `Metis test results are available in the link: ${encodeURI(`${targetUrl}/projects/${jsonRes.api_key_id}/test/${prName}`)}` })));
     }
     catch (e) {
         console.error(e);
