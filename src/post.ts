@@ -49,9 +49,9 @@ if (setupMetis) {
       (await octokit.rest.issues.createComment({
         ...context.repo,
         issue_number: prId || issue?.number || 0,
-        body: `Metis test results are available in the link: ${encodeURI(
+        body: `[Metis test results are available here](${encodeURI(
           `${targetUrl}/projects/${jsonRes.api_key_id}/test/${prName}`,
-        )}`,
+        )})`,
       }));
   } catch (e: any) {
     console.error(e);
